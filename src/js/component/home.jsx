@@ -4,43 +4,10 @@ import { useState } from "react";
 function Home() {
 	const [tasks, setTasks] = useState([]);
 	const [user, setUser] = useState('benny');
-	const [inputUser, setInputUser] = useState('');
 	const [input, setInput] = useState('');
 
 	useEffect(() => {
-		fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`)
-			.then(response => {
-				return response.json();
-			})
-
-			.then(data => {
-				//here is where your code should start after the fetch finishes
-				console.log(data); //this will print on the console the exact object received from the server
-				setTasks(data);
-			})
-			.catch(error => {
-				//error handling
-				console.log(error);
-				fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`, {
-					method: "POST",
-					body: JSON.stringify([]),
-					headers: {
-						"Content-Type": "application/json"
-					}
-				})
-					.then(resp => {
-						return resp.json();
-					})
-					.then(data => {
-						//here is where your code should start after the fetch finishes
-						console.log(data); //this will print on the console the exact object received from the server
-						setTasks(data);
-					})
-					.catch(error => {
-						//error handling
-						console.log(error);
-					});
-			});
+		fetchData()
 	}, []);
 
 	const addTask = () => {
@@ -48,7 +15,7 @@ function Home() {
 			alert("Task cannot be empty");
 		} else {
 			//setTasks([...tasks, {label: input, done: false}]);
-			fetch('https://playground.4geeks.com/apis/fake/todos/user/benny', {
+			fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`, {
 				method: "PUT",
 				body: JSON.stringify([...tasks, { label: input, done: false }]),
 				headers: {
@@ -73,7 +40,7 @@ function Home() {
 		const tempArr = [...tasks];
 		tempArr.splice(index, 1);
 		//setTasks(tempArr);
-		fetch('https://playground.4geeks.com/apis/fake/todos/user/benny', {
+		fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`, {
 			method: "PUT",
 			body: JSON.stringify(tempArr),
 			headers: {
@@ -92,7 +59,7 @@ function Home() {
 			});
 
 	};
-	const changeUser = () => {
+	const fetchData = () => {
 		fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`)
 			.then(response => {
 				return response.json();
@@ -104,8 +71,6 @@ function Home() {
 				setTasks(data);
 			})
 			.catch(error => {
-				//error handling
-				console.log(error);
 				fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`, {
 					method: "POST",
 					body: JSON.stringify([]),
@@ -113,19 +78,12 @@ function Home() {
 						"Content-Type": "application/json"
 					}
 				})
-					.then(resp => {
-						return resp.json();
-					})
-					.then(data => {
-						//here is where your code should start after the fetch finishes
-						console.log(data); //this will print on the console the exact object received from the server
-						setTasks(data);
-					})
-					.catch(error => {
-						//error handling
-						console.log(error);
-					});
+					console.log(error);
+					fetchData();
 			});
+	}
+	const changeUser = () => {
+		fetchData();
 	}
 	return (
 		<div className="container-fluid text-center">
@@ -136,14 +94,13 @@ function Home() {
 					<input className="input-group rounded"
 						type="text"
 						placeholder="Enter a Username"
-						value={inputUser}
+						value={user}
 						onKeyDown={event => {
 							if (event.key === 'Enter') {
-								setUser(inputUser);
 								changeUser();
 							}
 						}}
-						onChange={(u) => setInputUser(u.target.value)}
+						onChange={(u) => setUser(u.target.value)}
 						maxLength="100"
 					/>
 					<input className="input-group rounded"
