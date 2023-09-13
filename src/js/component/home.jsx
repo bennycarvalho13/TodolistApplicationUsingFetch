@@ -7,6 +7,7 @@ function Home() {
 	const [input, setInput] = useState('');
 
 	useEffect(() => {
+		CreateUser();
 		fetchData()
 	}, []);
 
@@ -105,7 +106,7 @@ function Home() {
 					<input className="input-group rounded"
 					id="userName"
 						type="text"
-						placeholder="Choose a Username and press Enter"
+						placeholder="choose a Username and press Enter"
 						value={user}
 						onKeyDown={event => {
 							if (event.key === 'Enter') {
