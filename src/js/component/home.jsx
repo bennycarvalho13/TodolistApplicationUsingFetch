@@ -10,6 +10,43 @@ function Home() {
 		fetchData()
 	}, []);
 
+	const CreateUser = () => {
+		fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`, {
+					method: "POST",
+					body: JSON.stringify([]),
+					headers: {
+						"Content-Type": "application/json"
+					}
+				})
+				.then(resp => {
+					return resp.json();
+				})
+				.then(data => {
+					console.log(data);
+					setTasks(data);
+				})
+				.catch(error => {
+					console.log(error);
+				});
+	}
+
+	const fetchData = () => {
+		fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`)
+			.then(response => {
+				return response.json();
+			})
+
+			.then(data => {
+				//here is where your code should start after the fetch finishes
+				console.log(data); //this will print on the console the exact object received from the server
+				setTasks(data);
+			})
+			.catch(error => {
+				console.log(error);
+				CreateUser();
+			});
+	}
+
 	const addTask = () => {
 		if (input.trim() === "") {
 			alert("Task cannot be empty");
@@ -26,12 +63,10 @@ function Home() {
 					return resp.json();
 				})
 				.then(data => {
-					//here is where your code should start after the fetch finishes
-					console.log(data); //this will print on the console the exact object received from the server
+					console.log(data);
 					setTasks([...tasks, { label: input, done: false }]);
 				})
 				.catch(error => {
-					//error handling
 					console.log(error);
 				});
 		}
@@ -59,32 +94,7 @@ function Home() {
 			});
 
 	};
-	const fetchData = () => {
-		fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`)
-			.then(response => {
-				return response.json();
-			})
 
-			.then(data => {
-				//here is where your code should start after the fetch finishes
-				console.log(data); //this will print on the console the exact object received from the server
-				setTasks(data);
-			})
-			.catch(error => {
-				fetch(`https://playground.4geeks.com/apis/fake/todos/user/${user}`, {
-					method: "POST",
-					body: JSON.stringify([]),
-					headers: {
-						"Content-Type": "application/json"
-					}
-				})
-					console.log(error);
-					fetchData();
-			});
-	}
-	const changeUser = () => {
-		fetchData();
-	}
 	return (
 		<div className="container-fluid text-center">
 			<p className="h3 m-2">Current user : {user}</p>
@@ -97,7 +107,7 @@ function Home() {
 						value={user}
 						onKeyDown={event => {
 							if (event.key === 'Enter') {
-								changeUser();
+								CreateUser();
 							}
 						}}
 						onChange={(u) => setUser(u.target.value)}
@@ -122,7 +132,7 @@ function Home() {
 			<div className="row justify-content-center">
 				<div className="col-8">
 					<ul className="list-group">
-						{tasks.map((task, index) => (<li className="list-group-item m-0 d-inline-flex justify-content-between" id="listItem" key={index}>{task.label}<button type="button" onClick={() => { removeTask(index) }} className="btn" ><i className="fa-solid fa-x fa-lg "></i></button></li>))}
+						{tasks.length > 0 ? tasks.map((task, index) => (<li className="list-group-item m-0 d-inline-flex justify-content-between" id="listItem" key={index}>{task.label}<button type="button" onClick={() => { removeTask(index) }} className="btn" ><i className="fa-solid fa-x fa-lg "></i></button></li>)): fetchData()}
 						<li className="list-group-item m-0 text-start text-secondary list-group-item-dark">{tasks.length < 2 ? tasks.length < 1 ? "No Tasks in the list" : tasks.length + " Task in the list" : tasks.length + " Tasks in the list"}</li>
 					</ul>
 				</div>
