@@ -101,9 +101,11 @@ function Home() {
 			<p className="h1 display-1 m-2">ToDos</p>
 			<div className="row justify-content-center">
 				<div className="col-6 m-3">
+					<label htmlFor="userName">Choose an Username</label>
 					<input className="input-group rounded"
+					id="userName"
 						type="text"
-						placeholder="Enter a Username"
+						placeholder="Choose a Username and press Enter"
 						value={user}
 						onKeyDown={event => {
 							if (event.key === 'Enter') {
@@ -113,9 +115,11 @@ function Home() {
 						onChange={(u) => setUser(u.target.value)}
 						maxLength="100"
 					/>
+					<label htmlFor="addTask">Add a Task</label>
 					<input className="input-group rounded"
+					id="addTask"
 						type="text"
-						placeholder="Enter a task and press Enter"
+						placeholder="Add a task and press Enter"
 						value={input}
 						onKeyDown={event => {
 							if (event.key === 'Enter') {
